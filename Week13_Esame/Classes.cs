@@ -1,17 +1,19 @@
+using System.Globalization;
+
 namespace MyClasses
 {
     public class Contribuente
     {
-        // FIELDS
+        // ---------- FIELDS -------------
         private string _nome;
         private string _cognome;
-        private string _dataNascita;
+        private DateTime _dataNascita;
         private string _codiceFiscale;
         private string _sesso;
         private string _comuneResidenza;
         private double _redditoAnnuale;
 
-        // PROPERTIES
+        // --------- PROPERTIES -----------
         public string Nome
         {
             get
@@ -52,11 +54,19 @@ namespace MyClasses
         {
             get
             {
-                return _dataNascita;
+                return _dataNascita.ToString("dd/mm/yyyy");
             }
             set
             {
-                _dataNascita = value;
+                try
+                {
+                    _dataNascita = DateTime.ParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                }
+                catch
+                {
+                    throw new Exception("Il formato di data non è corretto");
+                }
             }
         }
         public string CodiceFiscale
@@ -97,14 +107,21 @@ namespace MyClasses
             }
             set
             {
-                _comuneResidenza = value;
+                if (value.Length > 0)
+                {
+                    _comuneResidenza = value;
+                }
+                else
+                {
+                    throw new Exception("Entra un valore valido per il comune di residenza");
+                }
             }
         }
         public double RedditoAnnuale
         {
             get
             {
-                return _redditoAnnuale;
+                return Math.Round(_redditoAnnuale, 2);
             }
             set
             {
@@ -112,48 +129,137 @@ namespace MyClasses
                 {
                     throw new Exception("Il reddito deve essere un valore positivo");
                 }
-                _redditoAnnuale = value;
+                _redditoAnnuale = Math.Round(value, 2);
             }
         }
 
-        // PROCEDURES
+        // --------- PROCEDURES -------------
+        // Riempie i campi del nuovo utente
         public void SetFields()
         {
-            Console.Write("Nome: ");
-            Nome = Console.ReadLine();
+            bool isCorrect = false;
 
-            Console.Write("Cognome: ");
-            Cognome = Console.ReadLine();
+            // Settare il nome
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Nome: ");
+                    Nome = Console.ReadLine();
+                    isCorrect = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
-            Console.Write("Data di nascita. gg/mm/yyyy: ");
-            DataNascita = Console.ReadLine();
+            // Settare e controllare il cognome
+            isCorrect = false;
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Cognome: ");
+                    Cognome = Console.ReadLine();
+                    isCorrect = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
-            Console.Write("Codice Fiscale: ");
-            CodiceFiscale = Console.ReadLine();
+            // Settare e controllare la data
+            isCorrect = false;
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Data di nascita. gg/mm/yyyy: ");
+                    DataNascita = Console.ReadLine();
+                    isCorrect = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
-            Console.Write("Sesso. M o F: ");
-            Sesso = Console.ReadLine();
+            isCorrect = false;
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Codice Fiscale: ");
+                    CodiceFiscale = Console.ReadLine();
+                    isCorrect = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
-            Console.Write("Comune di residenza: ");
-            ComuneResidenza = Console.ReadLine();
+            // Settare il sesso
+            isCorrect = false;
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Sesso. M o F: ");
+                    Sesso = Console.ReadLine();
+                    isCorrect = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
 
-            Console.Write("Reddito annuale: ");
-            RedditoAnnuale = double.Parse(Console.ReadLine());
+            }
+
+            isCorrect = false;
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Comune di residenza: ");
+                    ComuneResidenza = Console.ReadLine();
+                    isCorrect = true;
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+            }
+
+            // Settare e controllare il reddito
+
+            isCorrect = false;
+            while (!isCorrect)
+            {
+                try
+                {
+                    Console.Write("Reddito annuale: ");
+                    RedditoAnnuale = double.Parse(Console.ReadLine());
+                    isCorrect = true;
+                }
+                catch
+                {
+                    Console.WriteLine("Devi inserire u valore numerico valido");
+                }
+            }
         }
-        public void PrintDataSummary()
-        {
-            Console.Clear();
-            Console.WriteLine("Grazie per esserti registrato. Ecco qui un riepilogo dei tuoi dati.\n");
-            Console.WriteLine($"Nome: {Nome}");
-            Console.WriteLine($"Cognome: {Cognome}");
-            Console.WriteLine($"Data di nascita: {DataNascita}");
-            Console.WriteLine($"Codice fiscale: {CodiceFiscale}");
-            Console.WriteLine($"Comune di residenza: {ComuneResidenza}");
-            Console.WriteLine($"Reddito annuale: {RedditoAnnuale} €");
-        }
+
+        // Stampa il riepilogo dati utente e tasse da pagare
         public void PrintTaxesToPay()
         {
             Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("================================");
             Console.WriteLine();
             Console.WriteLine("Calcolo dell'imposta da versare");
             Console.WriteLine();
@@ -165,7 +271,44 @@ namespace MyClasses
             Console.WriteLine($"IMPOSTA DA VERSARE: {CalculateTaxes()} €");
         }
 
-        // FUNCTIONS
+        // Chiede se l'utente vuole calcolare altre tasse
+        public void CalculateMore()
+        {
+            bool isAnswerCorrect = false;
+            while (!isAnswerCorrect)
+            {
+                Console.Write("\nVuoi calcolare le tue tasse in base ad un altro reddito? Y o N: ");
+                string userAnswer = Console.ReadLine().ToLower();
+                switch (userAnswer)
+                {
+                    case "n":
+                        // Termina programma
+                        Console.Clear();
+                        Console.WriteLine("\nGrazie per aver usato il nostro calcolatore di tasse");
+                        isAnswerCorrect = true;
+                        return;
+                    case "y":
+                        // Input di reddito alternativo e ricalcolo
+                        Console.Clear();
+                        Console.Write("\nInserisci il tuo reddito annuo: ");
+                        try
+                        {
+                            RedditoAnnuale = double.Parse(Console.ReadLine());
+                            PrintTaxesToPay();
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Devi inserire un valore numerico valido");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("La risposta non è corretta. Rispondi y o n");
+                        break;
+                }
+            }
+        }
+
+        // -------- FUNCTIONS ---------
         public double CalculateTaxes()
         {
             double exceedAmount = 0;
@@ -199,16 +342,18 @@ namespace MyClasses
                 taxesToPay = exceedAmount;
 
             }
-            return taxesToPay;
+            return Math.Round(taxesToPay, 2);
 
         }
 
-        // CONSTRUCTORS
+        // -------- CONSTRUCTORS --------
         public Contribuente()
         {
             SetFields();
         }
     }
+
+    // ---------- CLASSI CON VARIABILI STATICHE -------------
     public class FasceReddito
     {
         public static double Fascia2
@@ -309,5 +454,15 @@ namespace MyClasses
             }
         }
 
+    }
+    public class Generic
+    {
+        public static void WelcomeUser()
+        {
+            Console.Clear();
+            Console.Write("\nBenvenuto nel calcolatore di tasse. Usa questo strumento per calcolare le imposte dovute al tuo beneamato fisco. Premi un tasto qualsiasi per continuare");
+            Console.ReadKey();
+            Console.Clear();
+        }
     }
 }
