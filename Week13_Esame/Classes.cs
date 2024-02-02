@@ -48,7 +48,7 @@ namespace MyClasses
             {
                 if (value.Length > 0)
                 {
-                    _cognome = value;
+                    _cognome = value.ToUpper();
                 }
                 else
                 {
@@ -122,7 +122,7 @@ namespace MyClasses
             {
                 if (value.Length > 0)
                 {
-                    _comuneResidenza = value;
+                    _comuneResidenza = value.ToUpper();
                 }
                 else
                 {
