@@ -24,12 +24,18 @@ namespace MyClasses
             {
                 if (value.Length > 0)
                 {
-                    _nome = value;
+                    _nome = value.ToUpper();
                 }
                 else
                 {
                     throw new Exception("Il nome deve essere di almeno un carattere");
                 }
+                foreach(var letter in value)
+                {
+                    if(Array.IndexOf(Generic.Alphabet, letter) == -1){
+                        throw new Exception("Il nome non può contenere numeri, spazi o caratteri speciali");
+                    }
+                }  
             }
         }
         public string Cognome
@@ -47,6 +53,13 @@ namespace MyClasses
                 else
                 {
                     throw new Exception("Il cognome deve essere di almeno un carattere");
+                }
+                foreach (var letter in value)
+                {
+                    if (Array.IndexOf(Generic.Alphabet, letter) == -1)
+                    {
+                        throw new Exception("Il cognome non può contenere numeri, spazi o caratteri speciali");
+                    }
                 }
             }
         }
@@ -249,7 +262,7 @@ namespace MyClasses
                 }
                 catch
                 {
-                    Console.WriteLine("Devi inserire u valore numerico valido");
+                    Console.WriteLine("Devi inserire un valore numerico valido");
                 }
             }
         }
@@ -457,6 +470,16 @@ namespace MyClasses
     }
     public class Generic
     {
+        private static char[] _alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+
+    public static char[] Alphabet
+        {
+            get
+            {
+                return _alphabet;
+            }
+        }
         public static void WelcomeUser()
         {
             Console.Clear();
@@ -465,4 +488,5 @@ namespace MyClasses
             Console.Clear();
         }
     }
+
 }

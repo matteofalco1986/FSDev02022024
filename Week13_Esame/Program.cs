@@ -11,6 +11,7 @@ namespace MainProgram
             // Welcome message
             Generic.WelcomeUser();
 
+
             // Create taxpayer
             while (true)
                 try
