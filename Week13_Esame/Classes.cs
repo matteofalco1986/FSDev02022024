@@ -140,7 +140,7 @@ namespace MyClasses
             Console.Write("Reddito annuale: ");
             RedditoAnnuale = double.Parse(Console.ReadLine());
         }
-        public void PrintSummary()
+        public void PrintDataSummary()
         {
             Console.Clear();
             Console.WriteLine("Grazie per esserti registrato. Ecco qui un riepilogo dei tuoi dati.\n");
@@ -151,6 +151,57 @@ namespace MyClasses
             Console.WriteLine($"Comune di residenza: {ComuneResidenza}");
             Console.WriteLine($"Reddito annuale: {RedditoAnnuale} €");
         }
+        public void PrintTaxesToPay()
+        {
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("Calcolo dell'imposta da versare");
+            Console.WriteLine();
+            Console.WriteLine($"Contribuente: {Nome} {Cognome},");
+            Console.WriteLine($"nato il {DataNascita} ({Sesso.ToUpper()}),");
+            Console.WriteLine($"residente in {ComuneResidenza},");
+            Console.WriteLine($"codice fiscale: {CodiceFiscale}");
+            Console.WriteLine($"Reddito dichiarato: {RedditoAnnuale} €");
+            Console.WriteLine($"IMPOSTA DA VERSARE: {CalculateTaxes()} €");
+        }
+
+        // FUNCTIONS
+        public double CalculateTaxes()
+        {
+            double exceedAmount = 0;
+            double taxesToPay = 0; ;
+            if (RedditoAnnuale > FasceReddito.Fascia5)
+            {
+                exceedAmount = (RedditoAnnuale - FasceReddito.Fascia5) * Aliquota.Fascia5;
+                taxesToPay = ImpostaBase.Fascia5 + exceedAmount;
+            }
+            else if (RedditoAnnuale > FasceReddito.Fascia4)
+            {
+                exceedAmount = (RedditoAnnuale - FasceReddito.Fascia4) * Aliquota.Fascia4;
+                taxesToPay = ImpostaBase.Fascia4 + exceedAmount;
+
+            }
+            else if (RedditoAnnuale > FasceReddito.Fascia3)
+            {
+                exceedAmount = (RedditoAnnuale - FasceReddito.Fascia3) * Aliquota.Fascia3;
+                taxesToPay = ImpostaBase.Fascia3 + exceedAmount;
+
+            }
+            else if (RedditoAnnuale > FasceReddito.Fascia2)
+            {
+                exceedAmount = (RedditoAnnuale - FasceReddito.Fascia2) * Aliquota.Fascia2;
+                taxesToPay = ImpostaBase.Fascia2 + exceedAmount;
+
+            }
+            else
+            {
+                exceedAmount = RedditoAnnuale * Aliquota.Fascia1;
+                taxesToPay = exceedAmount;
+
+            }
+            return taxesToPay;
+
+        }
 
         // CONSTRUCTORS
         public Contribuente()
@@ -160,68 +211,103 @@ namespace MyClasses
     }
     public class FasceReddito
     {
-        public static double Min1
-        {
-            get
-            {
-                return 0;
-            }
-        }
-        public static double Max1
+        public static double Fascia2
         {
             get
             {
                 return 15000;
             }
         }
-        public static double Min2
-        {
-            get
-            {
-                return Max1 + 1;
-            }
-        }
-        public static double Max2
+        public static double Fascia3
         {
             get
             {
                 return 28000;
             }
         }
-        public static double Min3
-        {
-            get
-            {
-                return Max2 + 1;
-            }
-        }
-        public static double Max3
+        public static double Fascia4
         {
             get
             {
                 return 55000;
             }
         }
-        public static double Min4
-        {
-            get
-            {
-                return Max3 + 1;
-            }
-        }
-        public static double Max4
+        public static double Fascia5
         {
             get
             {
                 return 75000;
             }
         }
-        public static double Min5
+    }
+    public class Aliquota
+    {
+        public static double Fascia1
         {
             get
             {
-                return Max4 + 1;
+                return 0.23;
             }
         }
+        public static double Fascia2
+        {
+            get
+            {
+                return 0.27;
+            }
+        }
+        public static double Fascia3
+        {
+            get
+            {
+                return 0.38;
+            }
+        }
+        public static double Fascia4
+        {
+            get
+            {
+                return 0.41;
+            }
+        }
+        public static double Fascia5
+        {
+            get
+            {
+                return 0.43;
+            }
+        }
+    }
+    public class ImpostaBase
+    {
+        public static double Fascia2
+        {
+            get
+            {
+                return 3450;
+            }
+        }
+        public static double Fascia3
+        {
+            get
+            {
+                return 6960;
+            }
+        }
+        public static double Fascia4
+        {
+            get
+            {
+                return 17220;
+            }
+        }
+        public static double Fascia5
+        {
+            get
+            {
+                return 25420;
+            }
+        }
+
     }
 }
